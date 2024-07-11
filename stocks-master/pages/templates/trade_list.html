@@ -1,0 +1,75 @@
+{% extends "home.html" %}
+{% load static %}
+
+{% block title %}
+<title>User Stocks</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 display-10 fw-bold text-uppercase text-left" style="font-family: 'Montserrat', sans-serif;font color:#fff">Stocks for {{ username|upper }}</h2>
+
+    <div class="">
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Stock Name</th>
+                    <th>Quantity</th>
+                    <th>Buy Price</th>
+                    <th>Sell Price</th>
+                    <th>Extra Charges</th>
+                    <th>Total</th>
+                    <th>Buy</th>
+                    <!-- Add more table headers for other fields -->
+                </tr>
+            </thead>
+            <tbody class='table-hover'>
+                {% for trade in trades %}
+                <tr>
+                    <td>{{ trade.trade_date }}</td>
+                    <td>{{ trade.stock_name }}</td>
+                    <td>{{ trade.quantity }}</td>
+                    <td>{{ trade.buy_price }}</td>
+                    <td>{{ trade.sell_price }}</td>
+                    <td>{{ trade.extra_charges }}</td>
+                    <td>{{ trade.total }}</td>
+                    <td>{{ trade.is_buy }}</td>
+                    <!-- Add more table cells for other fields -->
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot class="table-dark">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Profit/Loss: </td>
+                <td><span class="{% if total_sum >= 0 %}text-success{% else %}text-danger{% endif %}">{{ total_sum|floatformat:2 }}</span></td>
+                <td></td>
+            </tfoot>
+        </table>
+
+    </div>
+    <div class="container mt-5">
+        <!-- Your existing content -->
+        <div class="stock-summary mt-5">
+            <h3 class="mb-4 display-10 fw-bold text-uppercase text-left" style="font-family: 'Montserrat', sans-serif;">Stocks Summary</h3>
+
+            <div class="row">
+                {% for stock in stock_summary %}
+                <div class="col-md-4 mb-4">
+                    <div class="stock-card">
+                        <h5 class="fw-bold">{{ stock.stock_name|upper }}</h5>
+                        <p>Remaining Quantity: {{ stock.remaining_quantity }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">  
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+</head>
+<body>
+    {% if messages %}
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    {% for message in messages %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <h1 class="text" style="color:#fff">Login</h1>
+    <br>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+           
+        </div>
+        <div class="form-container sign-in-container">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                <h1>Sign in</h1>
+                <input type="username" class="form-cntrol" id="username" name="username" placeholder="Username" required />
+                <input type="password" class="form-cntrol" id="password" name="password"placeholder="Password" required/>
+                <a href="#">Forgot your password?</a>
+                <button type="submit">Sign In</button>
+                </div>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Trader!</h1>
+                    <p>Enter your personal details and start Trading with us</p>
+                    <a class="ghost" style="color:#fff; font-size:26px;  font-family:Times New Roman, Times, serif ;text-decoration:underline; 
+                    "href="{% url 'user_register' %}">Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

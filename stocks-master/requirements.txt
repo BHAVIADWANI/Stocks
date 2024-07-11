@@ -1,0 +1,6 @@
+Django==5.0.3
+numpy==1.26.4
+pandas==2.2.1
+requests==2.31.0
+serpapi==0.1.5
+urllib3==2.2.1

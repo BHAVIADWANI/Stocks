@@ -1,0 +1,268 @@
+{% extends "home.html" %} {% load static %} {% block title_ %}
+<title>Stocks</title>
+<link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
+{% comment %} \
+<script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+{% endcomment %}
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<style>
+  .my_plot {
+    margin:auto;
+    height: 450px;
+    width: 700px;
+  }
+
+  .news {
+    height: 500px;
+    overflow: auto;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+  }
+
+  body {
+    background-color: #fff;
+  }
+</style>
+{% endblock title_ %} {% block content %}
+
+<div class="row">
+  <div class="col-sm-2 my-auto">
+    <div class="form-check form-switch">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="normal"
+        name="chart"
+        value="normal"
+        checked
+      />
+      <label class="form-check-label" for="flexSwitchCheckDefault"
+        >Normal</label
+      >
+    </div>
+    <div class="form-check form-switch">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="upDown"
+        name="chart"
+        value="upDown"
+      />
+      <label class="form-check-label" for="flexSwitchCheckChecked"
+        >Up Down</label
+      >
+    </div>
+    <div class="form-check form-switch">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="volume"
+        name="chart"
+        value="volume"
+      />
+      <label class="form-check-label" for="flexSwitchCheckChecked"
+        >Volume</label
+      >
+    </div>
+    <div class="form-check form-switch">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="bollinger"
+        name="chart"
+        value="bollinger"
+      />
+      <label class="form-check-label" for="flexSwitchCheckChecked"
+        >Bollinger</label
+      >
+    </div>
+  </div>
+
+  <div class="tabs col-sm-6">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="reliance-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#reliance"
+          type="button"
+          role="tab"
+          aria-controls="reliance"
+          aria-selected="true"
+        >
+          Reliance
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="hdfc-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#hdfc"
+          type="button"
+          role="tab"
+          aria-controls="hdfc"
+          aria-selected="false"
+        >
+          HDFC Bank
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="stock-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#stock"
+          type="button"
+          role="tab"
+          aria-controls="stock"
+          aria-selected="true"
+        >
+          Axis Bank
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active my_tab"
+        id="reliance"
+        role="tabpanel"
+        aria-labelledby="reliance-tab"
+      >
+        <div id="stock1-graph" class="my_plot"></div>
+      </div>
+      <div
+        class="tab-pane fade my_tab"
+        id="hdfc"
+        role="tabpanel"
+        aria-labelledby="hdfc-tab"
+      >
+        <div id="stock2-graph" class="my_plot"></div>
+      </div>
+      <div
+        class="tab-pane fade my_tab"
+        id="stock"
+        role="tabpanel"
+        aria-labelledby="stock-tab"
+      >
+        <div id="stock3-graph" class="my_plot"></div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button
+          data-url="{% url 'buy' %}"
+          id="buyButton"
+          type="button"
+          class="btn btn-dark me-3"
+        >
+          Buy
+        </button>
+        <button
+          data-url="{% url 'sell' %}"
+          id="sellButton"
+          type="button"
+          class="btn btn-dark"
+        >
+          Sell
+        </button>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="col-md-3">
+    <div class="d-flex justify-content-center">
+      
+      <button id="ajaxButton" class="btn btn-dark">Get News</button>
+    </div>
+    <div class="news">
+      <iframe src="https://www.youtube.com/" width="100%" height="500px"></iframe>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var relianceTab = document.getElementById('reliance-tab');
+  var hdfcTab = document.getElementById('hdfc-tab');
+  var stockTab = document.getElementById('stock-tab');
+  //getting data from tabs of chart
+  var new_stock = '';
+  
+  
+
+  
+  var news_data = [];
+  $(document).ready(function () {
+    function ajaxView1() {
+      $.ajax({
+        url: "{% url 'news' %}",
+        data: {'stock_name':new_stock}, // news stock var
+        success: function (data) {
+          news_data = data.news;
+          console.log(news_data);
+          const newsContainer = document.querySelector(".news");
+
+          // Check if news data is available
+          if (news_data) {
+            // Clear existing content
+            newsContainer.innerHTML = "";
+
+            // Iterate over the news data and create HTML elements
+            news_data.forEach((item) => {
+              const paragraph = document.createElement("p");
+
+              if (item.source) {
+                const icon = document.createElement("img");
+                icon.src = item.source.icon; // Set the icon source
+                icon.alt = item.source.name; // Set the alt text for accessibility
+                icon.style.width = "20px"; // Adjust the width of the icon as needed
+                paragraph.appendChild(icon);
+              }
+
+              if (item.link) {
+                // Append the icon to the paragraph
+                // Create a new <a> element
+                const link = document.createElement("a");
+                link.textContent = item.title; // Set the link text
+                link.href = item.link; // Set the link URL
+                link.target = "_blank";
+                link.style.marginLeft = "5px";
+
+                // Append the link to the paragraph
+                paragraph.appendChild(link);
+              } else {
+              }
+              newsContainer.appendChild(paragraph);
+            });
+          } else {
+            // If no news data is available, display a message
+            newsContainer.textContent = "No news data available";
+          }
+        },
+      });
+    }
+
+    $("#ajaxButton").click(function () {
+      if (relianceTab.getAttribute('aria-selected') === 'true') {
+        new_stock = 'reliance';
+      } else if (hdfcTab.getAttribute('aria-selected') === 'true') {
+        new_stock = 'hdfc';
+      } else if (stockTab.getAttribute('aria-selected') === 'true') {
+        new_stock = 'axis';
+      }      
+      ajaxView1();
+    });
+  });
+</script>
+
+<script id="context-data" type="application/json">
+  {{ data|safe }}
+</script>
+<script src="{% static 'tab_bar.js' %}"></script>
+<script src="{% static 'stock_chart.js' %}"></script>
+<script src="{% static 'check_box.js ' %}"></script>
+
+{% endblock content %}
