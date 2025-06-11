@@ -18832,3 +18832,13 @@ WARNING "GET /static/check_box.js%20 HTTP/1.1" 404 1800
 WARNING "GET /static/check_box.js%20 HTTP/1.1" 404 1800
 WARNING "GET /static/check_box.js%20 HTTP/1.1" 404 1800
 WARNING "GET /static/check_box.js%20 HTTP/1.1" 404 1800
+INFO Logging started...
+INFO Logging started...
+WARNING Not Found: /Roboto-Regular.ttf
+WARNING Not Found: /Roboto-Regular.ttf
+WARNING "GET /Roboto-Regular.ttf HTTP/1.1" 404 3217
+WARNING "GET /Roboto-Regular.ttf HTTP/1.1" 404 3217
+WARNING Not Found: /favicon.ico
+WARNING Not Found: /favicon.ico
+WARNING "GET /favicon.ico HTTP/1.1" 404 3196
+WARNING "GET /favicon.ico HTTP/1.1" 404 3196
